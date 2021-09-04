@@ -37,7 +37,7 @@ export default function Notification({
     type: '', 
     text: ''
   });
-  const [alert, setAlert] = useState(null);
+  // const [alert, setAlert] = useState(null);
 
  const postData = async (url, data) => {
     const response = await fetch(url, {
@@ -54,12 +54,16 @@ export default function Notification({
 
   useEffect(() => {
     let interval;
+    console.log('user', user);
+
     if(user){
-      console.log(user);
       interval = setInterval(() => {
+        console.log('posing:', user.user_id);
         postData("/get_notification", {user_id: user.user_id}).then(async response => {
+          console.log(response, 'response');
           try {
           const new_notification = await response.json()
+          console.log(new_notification , 'new_notification from server to front');
           setNotification(new_notification);
         } catch(error) {
           console.error(error)
@@ -69,22 +73,24 @@ export default function Notification({
     }
 
     return () => clearInterval(interval);
-  }, []);
+  });
 
-  useEffect(() => {
-      setAlert(
-        (<Alert severity={notification.type} >
-          <div className={classes.notificationBlock}>
-            <Typography variant="body1">
-              {notification.text}
-            </Typography>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose} style={{marginLeft: "15px"}}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </div>
-        </Alert>)
-      )
-  },[notification])
+  // useEffect(() => {
+  //   console.log('in useeffect setAlert');
+  //     setAlert(
+  //       (<Alert severity={notification.type} >
+  //         <div className={classes.notificationBlock}>
+  //           <Typography variant="body1">
+  //             {notification.text}
+  //           </Typography>
+  //           <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose} style={{marginLeft: "15px"}}>
+  //             <CloseIcon fontSize="small" />
+  //           </IconButton>
+  //         </div>
+  //       </Alert>)
+  //     )
+  //     setOpen(true);
+  // },[notification])
   
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -99,10 +105,19 @@ export default function Notification({
       {notification.id !== '' &&
       (<Snackbar 
         open={open} 
-        autoHideDuration={1000} 
+        autoHideDuration={user.durtaion} 
         onClose={handleClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-          {alert}
+         <Alert severity={notification.type} key={notification.id} >
+           <div className={classes.notificationBlock}>
+             <Typography variant="body1">
+               {notification.text}
+             </Typography>
+             <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose} style={{marginLeft: "15px"}}>
+               <CloseIcon fontSize="small" />
+             </IconButton>
+            </div>
+         </Alert>
       </Snackbar>)}
     </div>
   );

@@ -82,7 +82,7 @@ const generate_notification = (blocked_notifications) => {
             notification = notifications_arr[rand];
         }
     }
-
+    console.log(notification, 'notification in generate_notification');
     return notification;
 }
 

@@ -43,7 +43,7 @@ const create_user = async (id, duration, time_period) => {
             user_id, duration, time_period
         )
         VALUES ('${id}', '${duration}', '${time_period}')
-        `;
+        ;`;
 
     try {
         await client.query(query);
@@ -63,7 +63,7 @@ const update_blocked_notifications = async (user_id, blocked_notifications) => {
         UPDATE users
         SET blocked_notifications = '${blocked_notifications}'
         WHERE user_id = '${user_id}'
-        `;
+        ;`;
 
     try {
         await client.query(query);
@@ -74,13 +74,14 @@ const update_blocked_notifications = async (user_id, blocked_notifications) => {
 };
 
 const get_blocked_notifications = (user_id) => {
+    console.log('get_blocked_notifications', user_id);
     let result = {}
 
     const query = `
     SELECT blocked_notifications 
     FROM users 
     WHERE user_id = '${user_id}'
-    `;
+    ;`;
 
     client.query(query)
     .then(res => {

@@ -34,6 +34,7 @@ function App() {
   const handleClick = () => {
     setOpen(true);
     setDisabled(true);
+    console.log("generate btn clicked");
 
     fetch("/generate_user").then(async response => {
       try {

@@ -22,21 +22,21 @@ app.listen(PORT, () => {
 });
 
 app.get("/ping", (req, res) => {
-    res.json({ message: "pong" });
+  res.json({ message: "pong" });
 });
-  
+
 app.get("/generate_user", (req, res) => {
-  try{
+  try {
     const user = utils.generate_user();
 
-    res.json({ 
-      user_id: user.id, 
-      duration: user.duration, 
-      time_period: user.time_period, 
+    res.json({
+      user_id: user.id,
+      duration: user.duration,
+      time_period: user.time_period,
       message: "User has been created"
     });
   }
-  catch(err){
+  catch (err) {
     console.error(err);
     res.json({ error: "Failed to create user " + err });
   }
@@ -44,18 +44,23 @@ app.get("/generate_user", (req, res) => {
 
 app.post("/get_notification", (req, res) => {
 
-  try{
+  try {
+    console.log('in server');
     const blocked_notifications = db.get_blocked_notifications(req.body.user_id);
+    console.log('blocked_notifications', blocked_notifications);
     const notification = utils.generate_notification(blocked_notifications);
-    console.log(notification);
-    res.json({ 
-      notification_id: notification.id,
-      type: notification.type,
-      text: notification.text, 
-      message: "notification has been sent"
-    });
+    console.log(notification, 'notifiction in in server after generating');
+
+    if (notification) {
+      res.json({
+        notification_id: notification?.id,
+        type: notification.type,
+        text: notification.text,
+        message: "notification has been sent"
+      });
+    }
   }
-  catch(err){
+  catch (err) {
     console.error(err);
     res.json({ error: "Failed to create notification " + err });
   }
