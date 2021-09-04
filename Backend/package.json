@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "moment": "^2.29.1",
     "pg": "^8.7.1",
-    "pgtools": "^0.3.2"
+    "pgtools": "^0.3.2",
+    "uuid": "^8.3.2"
   }
 }

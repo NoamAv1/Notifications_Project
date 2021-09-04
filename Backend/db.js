@@ -21,8 +21,10 @@ const create_table_users = async () => {
     const query = `
         CREATE TABLE [IF NOT EXISTS] users (
             user_id serial PRIMARY KEY,
-            created_on TIMESTAMP NOT NULL,
-            clicked_on JSON
+            created_at TIMESTAMP NOT NULL,
+            duration int NOT NULL,
+            time_period int NOT NULL,
+            blocked_notifications TEXT []
         );`;
     client.query(query, (err, res) => {
         if (err) {
@@ -34,12 +36,12 @@ const create_table_users = async () => {
     await client.end();
 };
 
-const insert_table_users = async () => {
+const insert_table_users = async (id, date, duration, time_period, blocked_notifications) => {
     const query = `
         INSERT INTO users (
-            email, firstName, lastName, age
+            user_id, created_at, duration, time_period, blocked_notifications
         )
-        VALUES ('johndoe@gmail.com', 'john', 'doe', 21)
+        VALUES ('${id}'', '${date}', '${duration}', '${time_period}', '${blocked_notifications}}')
         `;
     
     client.query(query, (err, res) => {
@@ -52,11 +54,11 @@ const insert_table_users = async () => {
     await client.end();
 }
 
-const update_table_users = async () => {
+const update_blocked_notifications = async (id, blocked_notifications) => {
     const query = `
         UPDATE users
-        SET age = 22
-        WHERE email = 'johndoe@gmail.com'
+        SET blocked_notifications = ${blocked_notifications}
+        WHERE user_id = '${id}'
         `;
 
     client.query(query, (err, res) => {
@@ -71,4 +73,33 @@ const update_table_users = async () => {
         console.log('Data update successful');
     });
     await client.end();
+}
+
+const get_blocked_notifications = async (id) => {
+    let result = {}
+
+    const query = `
+    SELECT blocked_notifications 
+    FROM users 
+    WHERE id = ${id}
+    `;
+
+    client.query(query, (err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        for (let row of res.rows) {
+            result = {
+                ...result,
+                row
+            }
+        }
+    });
+
+    return result;
+}
+
+module.exports = {
+    create_db, create_table_users, insert_table_users, update_blocked_notifications, get_blocked_notifications
 }
