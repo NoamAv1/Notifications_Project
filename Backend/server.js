@@ -1,15 +1,16 @@
 const express = require("express");
+const bodyParser = require('body-parser')
 const db = require("./db")
 const utils = require("./utils");
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+app.use(bodyParser.json());
 
 /**
  * create db instance
  */
-
 const setup_db = async () => {
   await db.create_db();
   await db.create_table_users();
@@ -37,11 +38,12 @@ app.get("/generate_user", (req, res) => {
   }
   catch(err){
     console.error(err);
-    res.json({ error: "Failed to create user" + err });
+    res.json({ error: "Failed to create user " + err });
   }
 })
 
 app.post("/get_notification", (req, res) => {
+
   try{
     const blocked_notifications = db.get_blocked_notifications(req.body.user_id);
     const notification = utils.generate_notification(blocked_notifications);
@@ -55,6 +57,6 @@ app.post("/get_notification", (req, res) => {
   }
   catch(err){
     console.error(err);
-    res.json({ error: "Failed to create notification" + err });
+    res.json({ error: "Failed to create notification " + err });
   }
 })

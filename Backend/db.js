@@ -24,8 +24,7 @@ const create_db = async () => {
 const create_table_users = async () => {
     const query = `
     CREATE TABLE users (
-        user_id serial PRIMARY KEY,
-        created_at TIMESTAMP,
+        user_id uuid PRIMARY KEY,
         duration int,
         time_period int,
         blocked_notifications TEXT []
@@ -38,27 +37,32 @@ const create_table_users = async () => {
     }
 };
 
-const insert_table_users = async (id, date, duration, time_period, blocked_notifications) => {
+const create_user = async (id, duration, time_period) => {
     const query = `
         INSERT INTO users (
-            user_id, created_at, duration, time_period, blocked_notifications
+            user_id, duration, time_period
         )
-        VALUES ('${id}'', '${date}', '${duration}', '${time_period}', '${blocked_notifications}}')
+        VALUES ('${id}', '${duration}', '${time_period}')
         `;
 
     try {
         await client.query(query);
-        console.log('Data insert successful');
+        console.log('User created successful');
     } catch (err) {
         console.error(err);
     }
 };
 
-const update_blocked_notifications = async (id, blocked_notifications) => {
+// let new_blocked_notifications = "";
+// for(item of blocked_notifications){
+//     new_blocked_notifications = new_blocked_notifications + '"'+ item + '", ';
+// }
+// new_blocked_notifications = new_blocked_notifications.substring(0, str.length - 1);
+const update_blocked_notifications = async (user_id, blocked_notifications) => {
     const query = `
         UPDATE users
-        SET blocked_notifications = ${blocked_notifications}
-        WHERE user_id = '${id}'
+        SET blocked_notifications = '${blocked_notifications}'
+        WHERE user_id = '${user_id}'
         `;
 
     try {
@@ -69,13 +73,13 @@ const update_blocked_notifications = async (id, blocked_notifications) => {
     }
 };
 
-const get_blocked_notifications = async (id) => {
+const get_blocked_notifications = (user_id) => {
     let result = {}
 
     const query = `
     SELECT blocked_notifications 
     FROM users 
-    WHERE id = ${id}
+    WHERE user_id = '${user_id}'
     `;
 
     client.query(query)
@@ -97,5 +101,5 @@ const get_blocked_notifications = async (id) => {
 };
 
 module.exports = {
-    create_db, create_table_users, insert_table_users, update_blocked_notifications, get_blocked_notifications
+    create_db, create_table_users, create_user, update_blocked_notifications, get_blocked_notifications
 };

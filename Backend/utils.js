@@ -1,4 +1,3 @@
-const moment= require('moment');
 const { v4: uuidv4 } = require('uuid');
 const db = require("./db");
 
@@ -11,7 +10,7 @@ const db = require("./db");
  * @returns {int} a random value between min to max including.
  */
 const get_rnd_integer = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
+    return (Math.floor(Math.random() * (max - min + 1) ) + min) + 1;
 };
 
 /**
@@ -22,12 +21,11 @@ const get_rnd_integer = (min, max) => {
  */
 const generate_user = () => {
     const user_id = uuidv4();
-    const created_at = moment().format('YYYY-MM-DD');
-    const duration = utils.get_rnd_integer(1000, 4000);
-    const time_period = utils.get_rnd_integer(1000, 4000);
+    const duration = Math.ceil(get_rnd_integer(1000, 4000) / 1000) * 1000;
+    const time_period = Math.ceil(get_rnd_integer(5000, 10000) / 1000) * 1000;
 
     try{
-        db.insert_table_users(user_id, created_at, duration, time_period, {});
+        db.create_user(user_id, duration, time_period);
 
         return {id: user_id, duration: duration, time_period: time_period}
     }
@@ -78,9 +76,11 @@ const generate_notification = (blocked_notifications) => {
     let rand = get_rnd_integer(0, notifications_arr.length - 1);
     let notification = notifications_arr[rand];
 
-    while(blocked_notifications.includes(notification.id)){
-        rand = get_rnd_integer(0, notifications_arr.length - 1);
-        notification = notifications_arr[rand];
+    if(blocked_notifications) {
+        while(blocked_notifications.includes(notification.id)){
+            rand = get_rnd_integer(0, notifications_arr.length - 1);
+            notification = notifications_arr[rand];
+        }
     }
 
     return notification;
