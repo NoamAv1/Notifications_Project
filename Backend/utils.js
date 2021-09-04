@@ -1,7 +1,6 @@
-import moment from "moment";
-import { v4 as uuidv4 } from 'uuid';
-
-import db from "./db";
+const moment= require('moment');
+const { v4: uuidv4 } = require('uuid');
+const db = require("./db");
 
 /**
  * Geneterating a random int between the min and max values.
@@ -11,7 +10,7 @@ import db from "./db";
  * @param {int} max - the maximun value
  * @returns {int} a random value between min to max including.
  */
-export const get_rnd_integer = (min, max) => {
+const get_rnd_integer = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 };
 
@@ -21,12 +20,11 @@ export const get_rnd_integer = (min, max) => {
  * 
  * @returns {obj} user - with id, durtaion and time_period values.
  */
-export const generate_user = () => {
+const generate_user = () => {
     const user_id = uuidv4();
     const created_at = moment().format('YYYY-MM-DD');
     const duration = utils.get_rnd_integer(1000, 4000);
     const time_period = utils.get_rnd_integer(1000, 4000);
-
 
     try{
         db.insert_table_users(user_id, created_at, duration, time_period, {});
@@ -38,7 +36,6 @@ export const generate_user = () => {
         throw new Error("Error on insert into table", err)
     }
 };
-
 
 /**
  * Constant of the notifications
@@ -77,7 +74,7 @@ const notifications_arr = [
  * @param {array<string>} blocked_notifications 
  * @returns {obj} notification - with the details of the notification.
  */
-export const generate_notification = (blocked_notifications) => {
+const generate_notification = (blocked_notifications) => {
     let rand = get_rnd_integer(0, notifications_arr.length - 1);
     let notification = notifications_arr[rand];
 
@@ -87,4 +84,8 @@ export const generate_notification = (blocked_notifications) => {
     }
 
     return notification;
+}
+
+module.exports = {
+    generate_notification, generate_user
 }

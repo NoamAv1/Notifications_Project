@@ -1,11 +1,12 @@
 const { Client } = require('pg');
 
-const client = new Client({
+let client_details = {
     user: 'postgres',
     host: 'localhost',
     password: '123456',
     port: 5432
-});
+}
+let client = new Client(client_details);
 
 const create_db = async () => {
     await client.connect();
@@ -13,27 +14,28 @@ const create_db = async () => {
     await client.query(`CREATE DATABASE notifications;`);
     await client.end();
 
-    client.database = "notifications";
+    client_details.database = 'notifications';
+    client = new Client(client_details);
+    client.connect();
+    
+    console.log('DB successfully created');
 };
 
 const create_table_users = async () => {
-    await client.connect();
     const query = `
-        CREATE TABLE [IF NOT EXISTS] users (
-            user_id serial PRIMARY KEY,
-            created_at TIMESTAMP NOT NULL,
-            duration int NOT NULL,
-            time_period int NOT NULL,
-            blocked_notifications TEXT []
-        );`;
-    client.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
+    CREATE TABLE users (
+        user_id serial PRIMARY KEY,
+        created_at TIMESTAMP,
+        duration int,
+        time_period int,
+        blocked_notifications TEXT []
+    );`
+    try {
+        await client.query(query);
         console.log('Table users is successfully created');
-    });
-    await client.end();
+    } catch (err) {
+        console.error(err);
+    }
 };
 
 const insert_table_users = async (id, date, duration, time_period, blocked_notifications) => {
@@ -43,16 +45,14 @@ const insert_table_users = async (id, date, duration, time_period, blocked_notif
         )
         VALUES ('${id}'', '${date}', '${duration}', '${time_period}', '${blocked_notifications}}')
         `;
-    
-    client.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
+
+    try {
+        await client.query(query);
         console.log('Data insert successful');
-    });
-    await client.end();
-}
+    } catch (err) {
+        console.error(err);
+    }
+};
 
 const update_blocked_notifications = async (id, blocked_notifications) => {
     const query = `
@@ -61,19 +61,13 @@ const update_blocked_notifications = async (id, blocked_notifications) => {
         WHERE user_id = '${id}'
         `;
 
-    client.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        if (err) {
-            console.error(err);
-            return;
-        }
+    try {
+        await client.query(query);
         console.log('Data update successful');
-    });
-    await client.end();
-}
+    } catch (err) {
+        console.error(err);
+    }
+};
 
 const get_blocked_notifications = async (id) => {
     let result = {}
@@ -84,22 +78,24 @@ const get_blocked_notifications = async (id) => {
     WHERE id = ${id}
     `;
 
-    client.query(query, (err, res) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
+    client.query(query)
+    .then(res => {
         for (let row of res.rows) {
             result = {
                 ...result,
                 row
             }
         }
+    })
+    .catch(err => {
+        console.error(err);
+    })
+    .finally(() => {
+        console.log('Table is successfully created');
+        return result;
     });
-
-    return result;
-}
+};
 
 module.exports = {
     create_db, create_table_users, insert_table_users, update_blocked_notifications, get_blocked_notifications
-}
+};

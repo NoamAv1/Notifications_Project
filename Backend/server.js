@@ -1,7 +1,6 @@
 const express = require("express");
-
-import db from "./db";
-import utils from "./utils";
+const db = require("./db")
+const utils = require("./utils");
 
 const PORT = process.env.PORT || 3001;
 
@@ -10,8 +9,12 @@ const app = express();
 /**
  * create db instance
  */
-db.create_db();
-db.create_table_users();
+
+const setup_db = async () => {
+  await db.create_db();
+  await db.create_table_users();
+};
+setup_db();
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
@@ -44,6 +47,7 @@ app.post("/get_notification", (req, res) => {
     const notification = utils.generate_notification(blocked_notifications);
 
     res.json({ 
+      notification_id: notification.id,
       type: notification.type,
       text: notification.text, 
       message: "notification has been sent"
