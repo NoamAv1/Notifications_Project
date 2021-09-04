@@ -47,7 +47,7 @@ app.post("/get_notification", (req, res) => {
   try{
     const blocked_notifications = db.get_blocked_notifications(req.body.user_id);
     const notification = utils.generate_notification(blocked_notifications);
-
+    console.log(notification);
     res.json({ 
       notification_id: notification.id,
       type: notification.type,

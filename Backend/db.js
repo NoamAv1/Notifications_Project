@@ -95,7 +95,6 @@ const get_blocked_notifications = (user_id) => {
         console.error(err);
     })
     .finally(() => {
-        console.log('Table is successfully created');
         return result;
     });
 };
