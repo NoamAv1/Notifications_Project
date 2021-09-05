@@ -75,7 +75,6 @@ const notifications_arr = [
 const generate_notification = (blocked_notifications) => {
     let rand = get_rnd_integer(0, notifications_arr.length - 1);
     let notification = notifications_arr[rand];
-    
     if(blocked_notifications && notification) {
         while(blocked_notifications.includes(notification.id)){
             rand = get_rnd_integer(0, notifications_arr.length - 1);

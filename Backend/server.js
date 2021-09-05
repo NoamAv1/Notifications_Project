@@ -42,13 +42,10 @@ app.get("/generate_user", (req, res) => {
   }
 });
 
-app.post("/get_notification", (req, res) => {
+app.post("/get_notification", async (req, res) => {
 
   try {
-    let blocked_notifications;
-    db.get_blocked_notifications(req.body.user_id).then(res => {
-      blocked_notifications = res
-    });
+    let blocked_notifications = await db.get_blocked_notifications(req.body.user_id)
     const notification = utils.generate_notification(blocked_notifications);
 
     if (notification) {

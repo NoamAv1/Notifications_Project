@@ -53,11 +53,6 @@ const create_user = async (id, duration, time_period) => {
     }
 };
 
-// let new_blocked_notifications = "";
-// for(item of blocked_notifications){
-//     new_blocked_notifications = new_blocked_notifications + '"'+ item + '", ';
-// }
-// new_blocked_notifications = new_blocked_notifications.substring(0, str.length - 1);
 const update_blocked_notifications = async (user_id, blocked_notifications) => {
     const query = `
         UPDATE users
