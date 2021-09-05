@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Notification from './Components/Notification/Notification';
 
 import { 
@@ -32,9 +32,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   const handleClick = () => {
-    setOpen(true);
     setDisabled(true);
-    console.log("generate btn clicked");
 
     fetch("/generate_user").then(async response => {
       try {
@@ -58,7 +56,7 @@ function App() {
         >
           {user ? "Hello, and welcome!" : "Generate a new user"}
         </Button>
-        <Notification open={open} setOpen={setOpen} handleClick={handleClick} user={user} />
+        <Notification open={open} setOpen={setOpen} user={user} />
       </header>
     </div>
   );

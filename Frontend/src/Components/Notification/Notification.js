@@ -37,7 +37,6 @@ export default function Notification({
     type: '', 
     text: ''
   });
-  // const [alert, setAlert] = useState(null);
 
  const postData = async (url, data) => {
     const response = await fetch(url, {
@@ -52,19 +51,21 @@ export default function Notification({
     return response; 
   };
 
+
+  const handleClick = (e) => {
+    setOpen(false);
+    postData("/update_blocked_notifications", {notification_id: notification.id});
+  };
+
   useEffect(() => {
     let interval;
-    console.log('user', user);
-
     if(user){
       interval = setInterval(() => {
-        console.log('posing:', user.user_id);
         postData("/get_notification", {user_id: user.user_id}).then(async response => {
-          console.log(response, 'response');
           try {
           const new_notification = await response.json()
-          console.log(new_notification , 'new_notification from server to front');
           setNotification(new_notification);
+          setOpen(true);
         } catch(error) {
           console.error(error)
         }
@@ -75,49 +76,37 @@ export default function Notification({
     return () => clearInterval(interval);
   });
 
-  // useEffect(() => {
-  //   console.log('in useeffect setAlert');
-  //     setAlert(
-  //       (<Alert severity={notification.type} >
-  //         <div className={classes.notificationBlock}>
-  //           <Typography variant="body1">
-  //             {notification.text}
-  //           </Typography>
-  //           <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose} style={{marginLeft: "15px"}}>
-  //             <CloseIcon fontSize="small" />
-  //           </IconButton>
-  //         </div>
-  //       </Alert>)
-  //     )
-  //     setOpen(true);
-  // },[notification])
-  
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
+  const renderAlert = () => { 
+    if(notification.id === ''){
+      return ""
     }
-    setOpen(false);
-    postData("/update_blocked_notifications", {notification_id: notification.id});
+    return (
+      (<Alert severity={notification.type} >
+        <div className={classes.notificationBlock}>
+          <Typography variant="body1">
+            {notification.text}
+          </Typography>
+          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClick} style={{marginLeft: "15px"}}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </div>
+      </Alert>))
   };
 
+
+  const handleClose = (e) => {
+    setOpen(false);
+  };
+  
   return (
     <div className={classes.root}>
       {notification.id !== '' &&
       (<Snackbar 
         open={open} 
-        autoHideDuration={user.durtaion} 
+        autoHideDuration={user ? Number(user.duration) : 2000} 
         onClose={handleClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-         <Alert severity={notification.type} key={notification.id} >
-           <div className={classes.notificationBlock}>
-             <Typography variant="body1">
-               {notification.text}
-             </Typography>
-             <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose} style={{marginLeft: "15px"}}>
-               <CloseIcon fontSize="small" />
-             </IconButton>
-            </div>
-         </Alert>
+          {renderAlert()}
       </Snackbar>)}
     </div>
   );

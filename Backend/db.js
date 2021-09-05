@@ -74,7 +74,6 @@ const update_blocked_notifications = async (user_id, blocked_notifications) => {
 };
 
 const get_blocked_notifications = (user_id) => {
-    console.log('get_blocked_notifications', user_id);
     let result = {}
 
     const query = `

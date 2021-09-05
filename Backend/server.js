@@ -45,11 +45,8 @@ app.get("/generate_user", (req, res) => {
 app.post("/get_notification", (req, res) => {
 
   try {
-    console.log('in server');
     const blocked_notifications = db.get_blocked_notifications(req.body.user_id);
-    console.log('blocked_notifications', blocked_notifications);
     const notification = utils.generate_notification(blocked_notifications);
-    console.log(notification, 'notifiction in in server after generating');
 
     if (notification) {
       res.json({
