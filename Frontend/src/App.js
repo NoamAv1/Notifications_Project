@@ -21,7 +21,23 @@ import {
     color: 'white'
   },
   button: {
-    color: 'primary'
+    background: 'linear-gradient(to right, #ff4b1f 0%, #1fddff  51%, #ff4b1f  100%)',
+    backgroundSize:' 200% auto',
+    border: '10px',
+    borderRadius: 3,
+    boxShadow: '0 0 20px #eee',
+    color: 'white',
+    height: 48,
+    padding: '0 30px',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    transition: '0.5s',
+    "&:hover": {
+      backgroundPosition: "right center",
+      color: '#fff',
+      textDecoration: 'none'
+    }
   }
 }));
 
@@ -31,6 +47,10 @@ function App() {
   const [disabled, setDisabled] = useState(false);
   const [user, setUser] = useState(null);
 
+  /**
+   * Handling the click on the button.
+   * Generating a user and disabling the button.
+   */
   const handleClick = () => {
     setDisabled(true);
 

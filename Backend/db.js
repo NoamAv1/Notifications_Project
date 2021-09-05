@@ -8,6 +8,9 @@ let client_details = {
 }
 let client = new Client(client_details);
 
+/**
+ * Creating the db using node-postgres
+ */
 const create_db = async () => {
     await client.connect();
     await client.query(`DROP DATABASE IF EXISTS notifications;`);
@@ -21,6 +24,9 @@ const create_db = async () => {
     console.log('DB successfully created');
 };
 
+/**
+ * Creating the user table
+ */
 const create_table_users = async () => {
     const query = `
     CREATE TABLE users (
@@ -37,6 +43,13 @@ const create_table_users = async () => {
     }
 };
 
+/**
+ * Creating a user.
+ * 
+ * @param {uuid} id - the user id
+ * @param {*} duration - each user has is own unqiue duration of the notification
+ * @param {*} time_period - each user has is own unqiue time period for the notification to show
+ */
 const create_user = async (id, duration, time_period) => {
     const query = `
         INSERT INTO users (
@@ -52,7 +65,12 @@ const create_user = async (id, duration, time_period) => {
         console.error(err);
     }
 };
-
+/**
+ * Updating the blocked notification column in DB.
+ * 
+ * @param {uuid} user_id 
+ * @param {array<string>} blocked_notifications 
+ */
 const update_blocked_notifications = async (user_id, blocked_notifications) => {
     const query = `
         UPDATE users
@@ -68,6 +86,12 @@ const update_blocked_notifications = async (user_id, blocked_notifications) => {
     }
 };
 
+/**
+ * fetching the user blocked_notifications column
+ * 
+ * @param {uuid} user_id 
+ * @returns an array with the data of the blocked_notifications of the user
+ */
 const get_blocked_notifications = async (user_id) => {
     const query = `
     SELECT blocked_notifications 

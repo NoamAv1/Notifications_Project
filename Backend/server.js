@@ -21,10 +21,16 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
+/**
+ * To check if the server online.
+ */
 app.get("/ping", (req, res) => {
   res.json({ message: "pong" });
 });
 
+/**
+ * Generating user route
+ */
 app.get("/generate_user", (req, res) => {
   try {
     const user = utils.generate_user();
@@ -42,6 +48,10 @@ app.get("/generate_user", (req, res) => {
   }
 });
 
+
+/**
+ * Getting a new notificaiton route
+ */
 app.post("/get_notification", async (req, res) => {
 
   try {
@@ -63,6 +73,9 @@ app.post("/get_notification", async (req, res) => {
   }
 });
 
+/**
+ * Updating the black list route.
+ */
 app.post("/update_blocked_notifications", (req, res) => {
   try {
     const notification = utils.add_to_blocked_notifications(req.body.user_id, req.body.notification_id);

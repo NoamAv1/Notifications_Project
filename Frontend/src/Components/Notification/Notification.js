@@ -37,7 +37,14 @@ export default function Notification({
     type: '', 
     text: ''
   });
-
+  /**
+   * A default function to post a query to the server,
+   * For convient use with fetch post feature.
+   * 
+   * @param {string} url - the path we are looking for 
+   * @param {*} data  - an object that have the data we want to send
+   * @returns the reponse from the server
+   */
  const postData = async (url, data) => {
     const response = await fetch(url, {
       method: 'POST', 
@@ -51,12 +58,22 @@ export default function Notification({
     return response; 
   };
 
+  /**
+   * Handling the click on the close notification.
+   * Also blocking the notification to be seen again.
+   * 
+   * @param {event} e 
+   */
 
   const handleClick = (e) => {
     setOpen(false);
     postData("/update_blocked_notifications", {user_id: user.user_id, notification_id: notification.notification_id});
   };
 
+  /**
+   * Creating a useEffect that will run everytime, creating a never ending loop with the interval.
+   * It will show and get a new notification each time.
+   */
   useEffect(() => {
     let interval;
     if(user){
@@ -76,6 +93,12 @@ export default function Notification({
     return () => clearInterval(interval);
   });
 
+
+  /**
+   * To create a chnageable Alert we need to dynamily create the Alert component and return the new component each time we render.
+   * 
+   * @returns the Alert component if we have a notification else empty string.
+   */
   const renderAlert = () => { 
     if(notification.id === ''){
       return ""
@@ -92,7 +115,6 @@ export default function Notification({
         </div>
       </Alert>))
   };
-
 
   const handleClose = (e) => {
     setOpen(false);
