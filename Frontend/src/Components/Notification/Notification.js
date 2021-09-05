@@ -54,7 +54,7 @@ export default function Notification({
 
   const handleClick = (e) => {
     setOpen(false);
-    postData("/update_blocked_notifications", {notification_id: notification.id});
+    postData("/update_blocked_notifications", {user_id: user.user_id, notification_id: notification.notification_id});
   };
 
   useEffect(() => {

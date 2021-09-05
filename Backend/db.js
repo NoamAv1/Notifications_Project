@@ -73,30 +73,19 @@ const update_blocked_notifications = async (user_id, blocked_notifications) => {
     }
 };
 
-const get_blocked_notifications = (user_id) => {
-    let result = {}
-
+const get_blocked_notifications = async (user_id) => {
     const query = `
     SELECT blocked_notifications 
     FROM users 
     WHERE user_id = '${user_id}'
     ;`;
 
-    client.query(query)
-    .then(res => {
-        for (let row of res.rows) {
-            result = {
-                ...result,
-                row
-            }
-        }
-    })
-    .catch(err => {
-        console.error(err);
-    })
-    .finally(() => {
-        return result;
-    });
+    const res = await client.query(query);
+    if(res && res.rows && res.rows[0].blocked_notifications){
+        return res.rows[0].blocked_notifications;
+    }
+
+    return [];
 };
 
 module.exports = {

@@ -75,8 +75,8 @@ const notifications_arr = [
 const generate_notification = (blocked_notifications) => {
     let rand = get_rnd_integer(0, notifications_arr.length - 1);
     let notification = notifications_arr[rand];
-
-    if(blocked_notifications) {
+    
+    if(blocked_notifications && notification) {
         while(blocked_notifications.includes(notification.id)){
             rand = get_rnd_integer(0, notifications_arr.length - 1);
             notification = notifications_arr[rand];
@@ -87,4 +87,34 @@ const generate_notification = (blocked_notifications) => {
 
 module.exports = {
     generate_notification, generate_user
+}
+
+/**
+ * Blocking a notification that it won't show again.
+ * 
+ * @param {uuid} user_id - the user id
+ * @param {string} new_blocked_notification - the new notificaion that we are blocking
+ */
+const add_to_blocked_notifications = async (user_id, new_blocked_notification) => {
+    const old_blocked_notifications = await db.get_blocked_notifications(user_id);
+
+    let str = "{"
+    if(old_blocked_notifications && old_blocked_notifications.length > 0) { 
+        for(notification of old_blocked_notifications){
+            str += '"' + notification + '",'
+        }
+    }
+    str += '"' + new_blocked_notification + '"}';
+
+    try {
+        db.update_blocked_notifications(user_id, str);
+    }
+    catch(err) {
+        console.erro(err);
+        throw new Error("Error on insert into table", err)
+    }
+}
+
+module.exports = {
+    generate_notification, generate_user, add_to_blocked_notifications
 }

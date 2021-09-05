@@ -40,12 +40,15 @@ app.get("/generate_user", (req, res) => {
     console.error(err);
     res.json({ error: "Failed to create user " + err });
   }
-})
+});
 
 app.post("/get_notification", (req, res) => {
 
   try {
-    const blocked_notifications = db.get_blocked_notifications(req.body.user_id);
+    let blocked_notifications;
+    db.get_blocked_notifications(req.body.user_id).then(res => {
+      blocked_notifications = res
+    });
     const notification = utils.generate_notification(blocked_notifications);
 
     if (notification) {
@@ -61,4 +64,20 @@ app.post("/get_notification", (req, res) => {
     console.error(err);
     res.json({ error: "Failed to create notification " + err });
   }
-})
+});
+
+app.post("/update_blocked_notifications", (req, res) => {
+  try {
+    const notification = utils.add_to_blocked_notifications(req.body.user_id, req.body.notification_id);
+
+    if (notification) {
+      res.json({
+        message: "notification has been blocked"
+      });
+    }
+  }
+  catch (err) {
+    console.error(err);
+    res.json({ error: "Failed to block notification " + err });
+  }
+});
