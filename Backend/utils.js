@@ -84,10 +84,6 @@ const generate_notification = (blocked_notifications) => {
     return notification;
 }
 
-module.exports = {
-    generate_notification, generate_user
-}
-
 /**
  * Blocking a notification that it won't show again.
  * 
